@@ -90,15 +90,16 @@ function checkLoginStatus() {
             method: 'POST',
             credentials: 'include'
           }).then(function () {
-            window.location.href = 'index.html';
+            window.location.href = 'login.html';
           });
         });
+        document.documentElement.classList.add('auth-verified');
       } else {
-        navAuthArea.innerHTML = '<a href="login.html" class="btn btn-nav">Login</a>';
+        window.location.href = 'login.html';
       }
     })
     .catch(function () {
-      navAuthArea.innerHTML = '<a href="login.html" class="btn btn-nav">Login</a>';
+      window.location.href = 'login.html';
     });
 }
 
