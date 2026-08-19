@@ -21,9 +21,9 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: IS_PRODUCTION, // true only when NODE_ENV=production (i.e. real HTTPS deployment)
+    secure: IS_PRODUCTION,
     sameSite: IS_PRODUCTION ? 'none' : 'lax',
-    maxAge: 1000 * 60 * 60 * 24 // 1 day
+    maxAge: 1000 * 60 * 60 * 24
   }
 }));
 
@@ -31,7 +31,8 @@ const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT || 3306
 });
 
 db.connect(function (err) {
@@ -42,9 +43,13 @@ db.connect(function (err) {
   console.log('Connected to MySQL database.');
 });
 
+app.get('/health', function (req, res) {
+  res.json({ status: 'ok' });
+});
+
 const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // limit each IP to 5 login attempts per window
+  windowMs: 15 * 60 * 1000,
+  max: 5,
   message: { message: 'Too many login attempts. Please try again in 15 minutes.' },
   standardHeaders: true,
   legacyHeaders: false
